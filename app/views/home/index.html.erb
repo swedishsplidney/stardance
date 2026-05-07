@@ -2,10 +2,6 @@
   <%= render WelcomeOverlayComponent.new %>
 <% end %>
 
-<% if @show_home_intro %>
-  <%= render HomeIntroComponent.new %>
-<% end %>
-
 <div class="home-index">
   <div class="home-index__header">
     <%= render HeadingComponent.new(title: "Home", tone: :blue, size: :full) %>
