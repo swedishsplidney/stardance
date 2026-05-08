@@ -449,7 +449,7 @@ Rails.application.routes.draw do
   get "dev_login/:id", to: "sessions#dev_login", as: :dev_login if Rails.env.development? || Rails.env.test?
 
   # OAuth callback for HCA
-  # get "/oauth/callback", to: "sessions#create"
+  get "/oauth/callback", to: "sessions#create"
 
   # Home
   get "home", to: "home#index"
