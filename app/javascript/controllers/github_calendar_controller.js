@@ -116,9 +116,7 @@ export default class extends Controller {
 
         tooltip
           .style("visibility", "visible")
-          .html(
-            `<strong>${d.count}</strong> ${contributionText}<br/>${dateFormatted}`,
-          );
+          .text(`${d.count} ${contributionText} - ${dateFormatted}`);
       })
       .on("mousemove", function (event) {
         tooltip
