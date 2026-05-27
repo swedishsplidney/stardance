@@ -134,8 +134,4 @@ class AdminPolicy < ApplicationPolicy
   def access_special_activities?
     user.admin?
   end
-
-  def access_flavortime_dashboard?
-    user.admin? || user.flavortime?
-  end
 end

@@ -152,7 +152,6 @@
 #                            admin_ship_event_scores GET    /admin/ship_event_scores(.:format)                                                                admin/ship_event_scores#index
 #                         admin_super_mega_dashboard GET    /admin/super_mega_dashboard(.:format)                                                             admin/super_mega_dashboard#index
 #             admin_super_mega_dashboard_clear_cache DELETE /admin/super_mega_dashboard/clear_cache(.:format)                                                 admin/super_mega_dashboard#clear_cache
-#                         admin_flavortime_dashboard GET    /admin/flavortime_dashboard(.:format)                                                             admin/flavortime_dashboard#index
 #            admin_super_mega_dashboard_load_section GET    /admin/super_mega_dashboard/load_section(.:format)                                                admin/super_mega_dashboard#load_section
 #       admin_super_mega_dashboard_refresh_nps_vibes POST   /admin/super_mega_dashboard/refresh_nps_vibes(.:format)                                           admin/super_mega_dashboard#refresh_nps_vibes
 # send_letter_mail_admin_fulfillment_dashboard_index POST   /admin/fulfillment_dashboard/send_letter_mail(.:format)                                           admin/fulfillment_dashboard#send_letter_mail
@@ -413,8 +412,7 @@ class AdminConstraint
     policy = AdminPolicy.new(user, :admin)
     # Allow admins, fraud dept, and fulfillment persons (who have limited access)
     policy.access_admin_endpoints? ||
-      policy.access_fulfillment_view? ||
-      (request.path == "/admin/flavortime_dashboard" && policy.access_flavortime_dashboard?)
+      policy.access_fulfillment_view?
   end
 
   def self.admin_user_for(request)
@@ -687,7 +685,6 @@ Rails.application.routes.draw do
     get "ship_event_scores", to: "ship_event_scores#index"
     get "super_mega_dashboard", to: "super_mega_dashboard#index"
     delete "super_mega_dashboard/clear_cache", to: "super_mega_dashboard#clear_cache", as: :super_mega_dashboard_clear_cache
-    get "flavortime_dashboard", to: "flavortime_dashboard#index"
     get "super_mega_dashboard/load_section", to: "super_mega_dashboard#load_section"
     post "super_mega_dashboard/refresh_nps_vibes", to: "super_mega_dashboard#refresh_nps_vibes", as: :super_mega_dashboard_refresh_nps_vibes
     resources :fulfillment_dashboard, only: [ :index ] do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_27_135556) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_27_170653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -188,25 +188,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_27_135556) do
     t.datetime "updated_at", null: false
     t.index ["item_type", "item_id"], name: "index_disco_recommendations_on_item"
     t.index ["subject_type", "subject_id"], name: "index_disco_recommendations_on_subject"
-  end
-
-  create_table "flavortime_sessions", force: :cascade do |t|
-    t.string "app_version"
-    t.datetime "created_at", null: false
-    t.integer "discord_shared_seconds", default: 0, null: false
-    t.integer "discord_status_seconds", default: 0, null: false
-    t.datetime "ended_at"
-    t.string "ended_reason"
-    t.datetime "expires_at", null: false
-    t.datetime "last_heartbeat_at", null: false
-    t.string "platform"
-    t.string "session_id"
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["expires_at"], name: "index_flavortime_sessions_on_expires_at"
-    t.index ["session_id"], name: "index_flavortime_sessions_on_session_id", unique: true
-    t.index ["user_id", "created_at"], name: "index_flavortime_sessions_on_user_id_and_created_at"
-    t.index ["user_id"], name: "index_flavortime_sessions_on_user_id"
   end
 
   create_table "flipper_features", force: :cascade do |t|
@@ -1009,7 +990,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_27_135556) do
   add_foreign_key "comments", "users"
   add_foreign_key "devlog_versions", "post_devlogs", column: "devlog_id"
   add_foreign_key "devlog_versions", "users"
-  add_foreign_key "flavortime_sessions", "users"
   add_foreign_key "follows", "users", column: "followed_id"
   add_foreign_key "follows", "users", column: "follower_id"
   add_foreign_key "fulfillment_payout_lines", "fulfillment_payout_runs"

@@ -33,8 +33,6 @@ module Admin
         unless shop_orders_fulfillment?
           raise Pundit::NotAuthorizedError
         end
-      elsif flavortime_dashboard_request? && policy(:admin).access_flavortime_dashboard?
-        true
       elsif shop_manager_request? && current_user.shop_manager?
         true
       else
@@ -62,10 +60,6 @@ module Admin
 
     def admin_dashboard_request?
       controller_name == "application" && action_name == "index"
-    end
-
-    def flavortime_dashboard_request?
-      controller_name == "flavortime_dashboard"
     end
 
     def shop_manager_request?
