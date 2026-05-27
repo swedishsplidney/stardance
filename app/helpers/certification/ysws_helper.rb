@@ -28,7 +28,7 @@ module Certification::YswsHelper
   def fetch_platform_contributions(platform, username, contribution_data = nil)
     return nil if platform.blank? || username.blank?
 
-    result = contribution_data || Admin::ReviewPlatformService.fetch_contributions(platform, username)
+    result = contribution_data || Certification::YswsService.fetch_contributions(platform, username)
 
     if result[:error]
       case result[:error]
@@ -50,7 +50,7 @@ module Certification::YswsHelper
   def fetch_contribution_count(platform, username, contribution_data = nil)
     return nil if platform.blank? || username.blank?
 
-    result = contribution_data || Admin::ReviewPlatformService.fetch_contributions(platform, username)
+    result = contribution_data || Certification::YswsService.fetch_contributions(platform, username)
 
     if result[:error]
       nil
@@ -67,7 +67,7 @@ module Certification::YswsHelper
   def fetch_platform_contribution_data(platform, username)
     return nil if platform.blank? || username.blank?
 
-    result = Admin::ReviewPlatformService.fetch_contributions(platform, username)
+    result = Certification::YswsService.fetch_contributions(platform, username)
 
     if result[:error]
       nil # Hide data for errors
@@ -88,7 +88,7 @@ module Certification::YswsHelper
   def prepare_contribution_calendar_data(platform, username, contribution_data = nil)
     return nil if platform.blank? || username.blank?
 
-    result = contribution_data || Admin::ReviewPlatformService.fetch_contributions(platform, username)
+    result = contribution_data || Certification::YswsService.fetch_contributions(platform, username)
     return nil if result[:error] || result[:contributions].blank?
 
     # Create a hash map of contributions by date for quick lookup
