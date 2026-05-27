@@ -45,11 +45,7 @@ class Vote < ApplicationRecord
     storytelling: :storytelling_score
   }.freeze
 
-  scope :suspicious, -> { where(suspicious: true) }
-  scope :payout_countable, -> {}
-
-  before_save :mark_suspicious
-  before_create :stamp_verdict
+  def self.score_columns = SCORE_COLUMNS_BY_CATEGORY.values
 
   belongs_to :user, counter_cache: true
   belongs_to :project
@@ -59,17 +55,18 @@ class Vote < ApplicationRecord
 
   after_commit :increment_user_vote_balance, on: :create
 
-  validates :reason, presence: { message: "can't be blank" }
+  validates :reason, presence: true
   validate :reason_minimum_words
-  validates(*score_columns, inclusion: { in: MIN_SCORE..MAX_SCORE, message: "must be between 1 and 9" }, allow_nil: true)
-  validate :all_categories_scored
+  validates(*score_columns,
+    presence: { message: "must be scored" },
+    numericality: { only_integer: true, in: MIN_SCORE..MAX_SCORE, message: "must be between #{MIN_SCORE} and #{MAX_SCORE}" })
   validate :user_cannot_vote_on_own_projects
   validate :ship_event_matches_project
 
-  def category_description(category) = CATEGORIES[category.to_sym]
-
   private
 
+  # Validations
+  
   def reason_minimum_words
     return if reason.blank?
 
@@ -77,20 +74,8 @@ class Vote < ApplicationRecord
     errors.add(:reason, "must be at least 10 words (you have #{word_count})") if word_count < 10
   end
 
-  def all_categories_scored
-    missing = self.class.score_columns.select { |col| self[col].blank? }
-    errors.add(:base, "All categories must be scored") if missing.any?
-  end
-
   def user_cannot_vote_on_own_projects
     errors.add(:user, "cannot vote on own projects") if project&.users&.exists?(user_id)
-  end
-
-  def increment_user_vote_balance
-    # Only increment vote balance for legitimate (non-suspicious) votes
-    return if suspicious?
-
-    user.increment!(:vote_balance, 1)
   end
 
   def ship_event_matches_project
@@ -100,5 +85,11 @@ class Vote < ApplicationRecord
     return if expected_project_id.blank?
 
     errors.add(:project, "does not match ship event") if project_id != expected_project_id
+  end
+
+  # Callback
+
+  def increment_user_vote_balance
+    user.increment!(:vote_balance, 1)
   end
 end
