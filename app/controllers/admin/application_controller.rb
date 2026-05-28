@@ -2,8 +2,6 @@ module Admin
   class ApplicationController < ::ApplicationController
     include Pundit::Authorization
 
-    layout "admin"
-
     before_action :prevent_admin_access_while_impersonating
     before_action :set_paper_trail_whodunnit
 
