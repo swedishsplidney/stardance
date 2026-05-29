@@ -1,82 +1,492 @@
-.reviewer-queue {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: var(--space-xxl) clamp(20px, 2.4vw, 46px);
+// Reviewer queue dashboard (admin/certification/ships#index). Dark "space"
+// theme to match the rest of the signed-in app — see mission_submissions for
+// the sibling pattern. Layout mirrors the Shipwrights sw-dash queue: a stats
+// + leaderboard overview, a filter bar, and the queue table.
+
+.ship-queue {
+  --card-bg: var(--color-space-card, rgba(255, 255, 255, 0.04));
+  --card-border: var(--color-space-border, rgba(255, 255, 255, 0.1));
+  --accent: var(--color-brand-highlight);
+  --muted: var(--color-space-text-muted, rgba(255, 255, 255, 0.7));
+  --positive: #4ade80;
+  --negative: #f87171;
+
+  color: var(--color-space-text);
+
+  &__back {
+    display: inline-block;
+    margin-bottom: var(--space-m);
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--accent);
+    }
+  }
 
   &__header {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-s);
-    margin-bottom: var(--space-xl);
-
-    h1 {
-      margin: 0;
-      font-size: var(--font-size-xxxl);
-      line-height: var(--line-height-headers);
-    }
-
-    p {
-      margin: 0;
-      color: var(--color-text-muted);
-    }
-
-    .btn {
-      align-self: flex-start;
-    }
-  }
-
-  &__empty {
-    padding: var(--space-xl);
-    color: var(--color-text-muted);
-    text-align: center;
-    background: var(--color-card-bg, hsl(0, 0%, 98%));
-    border: 1px dashed var(--color-text-muted);
-    border-radius: 8px;
-  }
-
-  &__list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-s);
-    padding: 0;
-    margin: 0;
-    list-style: none;
-  }
-
-  &__item {
-    display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-m);
-    padding: var(--space-m) var(--space-l);
-    background: var(--color-card-bg, white);
-    border: 1px solid hsl(0, 0%, 88%);
-    border-radius: 8px;
+    margin-bottom: var(--space-l);
   }
 
-  &__item-main {
+  &__title {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
+    align-items: center;
+    gap: var(--space-s);
 
-    strong {
-      font-size: var(--font-size-l);
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      line-height: var(--line-height-headers);
     }
   }
 
-  &__item-meta {
-    font-size: var(--font-size-s);
-    color: var(--color-text-muted);
+  // Shared card chrome.
+  &__stats,
+  &__leaderboard,
+  &__filters,
+  &__table-wrap,
+  &__card,
+  &__empty {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
   }
 
-  &__item-status {
+  &__label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: var(--space-xxs);
+  }
+
+  // --- Overview: stats + leaderboard -------------------------------------
+  &__overview {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-m);
+    margin-bottom: var(--space-l);
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__stats {
+    padding: var(--space-l);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+  }
+
+  &__progress-headline {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+  }
+
+  &__net {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+
+    &.is-positive {
+      color: var(--positive);
+    }
+
+    &.is-negative {
+      color: var(--negative);
+    }
+  }
+
+  &__progress-note {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  &__metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-l);
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--card-border);
+  }
+
+  &__metric {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__metric-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+
+    &.is-positive {
+      color: var(--positive);
+    }
+
+    &.is-negative {
+      color: var(--negative);
+    }
+  }
+
+  &__metric-link {
+    text-decoration: underline;
+
+    &:hover,
+    &:focus-visible {
+      filter: brightness(1.1);
+    }
+  }
+
+  &__metric-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  &__alltime {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-m);
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--card-border);
+    font-size: 0.9rem;
+  }
+
+  &__tally {
+    color: var(--muted);
+
+    &.is-positive {
+      color: var(--positive);
+    }
+
+    &.is-negative {
+      color: var(--negative);
+    }
+  }
+
+  &__leaderboard {
+    padding: var(--space-m) var(--space-l) var(--space-l);
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__leaderboard-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    margin-bottom: var(--space-s);
+
+    h2 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+  }
+
+  &__tabs {
+    display: flex;
+    gap: var(--space-xxs);
+  }
+
+  &__tab {
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition:
+      color 150ms ease,
+      border-color 150ms ease,
+      background 150ms ease;
+
+    &:hover {
+      color: var(--color-space-text);
+    }
+
+    &.is-active {
+      color: var(--color-set-1-bg);
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+  }
+
+  &__ranks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    &.is-hidden {
+      display: none;
+    }
+  }
+
+  &__ranks-empty {
+    color: var(--muted);
+    font-size: 0.9rem;
+    padding: var(--space-s) 0;
+  }
+
+  &__rank {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr auto;
+    align-items: center;
+    gap: var(--space-s);
+    padding: var(--space-xxs) var(--space-xs);
+    border-radius: 6px;
+    font-size: 0.9rem;
+
+    &:nth-child(odd) {
+      background: rgba(255, 255, 255, 0.03);
+    }
+  }
+
+  &__rank-pos {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__rank-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__rank-count {
+    color: var(--accent);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  // --- Filters -----------------------------------------------------------
+  &__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-m);
+    padding: var(--space-m) var(--space-l);
+    margin-bottom: var(--space-l);
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: var(--space-xxs);
+    }
+  }
+
+  &__filter {
+    display: flex;
+    flex-direction: column;
+
+    &--search {
+      flex: 1 1 220px;
+    }
+  }
+
+  &__select,
+  &__input {
+    padding: var(--space-xs) var(--space-s);
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    background: var(--color-space-bg-2, rgba(0, 0, 0, 0.3));
+    color: var(--color-space-text);
+    font-family: inherit;
+    font-size: 0.9rem;
+    color-scheme: dark;
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+  }
+
+  &__input {
+    width: 100%;
+  }
+
+  &__filter-actions {
     display: flex;
     align-items: center;
     gap: var(--space-s);
   }
 
+  &__reset {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+  }
+
+  // --- Table -------------------------------------------------------------
+  &__table-wrap {
+    overflow-x: auto;
+
+    @media (max-width: 720px) {
+      display: none;
+    }
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+
+    thead th {
+      text-align: left;
+      padding: var(--space-s) var(--space-m);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--card-border);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: var(--space-s) var(--space-m);
+      border-bottom: 1px solid var(--card-border);
+      vertical-align: top;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+  }
+
+  &__cell-project {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 200px;
+  }
+
+  &__cell-claim,
+  &__cell-created {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__cell-action {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  &__project-title {
+    color: var(--color-space-text);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--accent);
+    }
+  }
+
+  &__project-id {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__muted {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
   &__claimed {
-    font-size: var(--font-size-s);
-    color: var(--color-text-muted);
+    color: var(--color-brand-orange, #ffb07a);
+    font-weight: 600;
+  }
+
+  &__countdown {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+
+    &.is-expired {
+      color: var(--negative);
+    }
+  }
+
+  &__reviewer {
+    color: var(--color-space-text);
+  }
+
+  // --- Mobile cards ------------------------------------------------------
+  &__cards {
+    display: none;
+    flex-direction: column;
+    gap: var(--space-s);
+
+    @media (max-width: 720px) {
+      display: flex;
+    }
+  }
+
+  &__card {
+    display: block;
+    padding: var(--space-m);
+    text-decoration: none;
+    color: var(--color-space-text);
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--accent);
+    }
+  }
+
+  &__card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    margin-bottom: var(--space-xs);
+  }
+
+  &__card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    margin-top: var(--space-xxs);
+  }
+
+  // --- Empty state -------------------------------------------------------
+  &__empty {
+    padding: var(--space-xl);
+    text-align: center;
+    color: var(--muted);
   }
 }
