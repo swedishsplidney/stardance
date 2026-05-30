@@ -143,34 +143,26 @@
             </details>
 
             <dialog id="<%= quote_dialog_id %>"
-                    class="feed-post-card__quote-dialog"
+                    class="composer-modal"
                     data-controller="modal"
                     aria-label="Quote repost">
-              <%= form_with scope: :post_repost,
+              <%= render Posts::ComposerComponent.new(
+                    post: Post::Repost.new,
+                    current_user: current_user,
+                    projects: [],
+                    selected_project: nil,
                     url: post_repost_path(repost_target),
-                    class: "feed-post-card__quote-composer",
-                    local: true do |form| %>
-                <div class="feed-post-card__quote-composer-main">
-                  <%= image_tag current_user.avatar, alt: "", class: "feed-post-card__quote-composer-avatar" %>
-                  <div class="feed-post-card__quote-composer-field">
-                    <%= form.label :body, "Add a thought", class: "feed-post-card__quote-composer-label" %>
-                    <%= form.text_area :body,
-                          class: "feed-post-card__quote-composer-textarea",
-                          rows: 4,
-                          required: true,
-                          maxlength: Post::Devlog::BODY_MAX_LENGTH,
-                          placeholder: "Add a thought before reposting." %>
-                  </div>
-                </div>
-                <div class="feed-post-card__quote-composer-actions">
-                  <button type="button"
-                          class="feed-post-card__quote-composer-cancel"
-                          onclick="document.getElementById(<%= quote_dialog_id.to_json %>)?.close()">
-                    Cancel
-                  </button>
-                  <%= form.submit "Quote", class: "feed-post-card__quote-composer-submit" %>
-                </div>
-              <% end %>
+                    scope: :post_repost,
+                    aria_label: "Quote repost",
+                    body_label: "Add a thought",
+                    placeholder: "Add a thought before reposting.",
+                    submit_text: "Quote",
+                    disable_with: "Quoting...",
+                    simple_mode: true,
+                    show_project_chips: false,
+                    show_attachments: false,
+                    show_time_preview: false
+                  ) %>
             </dialog>
           <% else %>
             <span class="feed-post-card__action feed-post-card__action--disabled" aria-label="Sign in to repost">
