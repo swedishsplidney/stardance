@@ -32,6 +32,7 @@ class Home::FeedsController < ApplicationController
 
     reposts = Post.of_reposts(join: true)
                   .visible_to(current_user)
+                  .where(post_reposts: { deleted_at: nil })
                   .includes(
                     :user,
                     postable: {

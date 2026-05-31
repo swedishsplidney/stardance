@@ -92,6 +92,7 @@ class UsersController < ApplicationController
                 .order(created_at: :desc)
 
     scope = hide_deleted_devlogs(scope) unless policy(@user).view_deleted_devlogs?
+    scope = hide_deleted_reposts(scope)
     scope = hide_rejected_ships(scope)
     scope.select { |post| !post.repost? || post.visible_repost_original_for?(current_user) }
   end
@@ -99,6 +100,11 @@ class UsersController < ApplicationController
   def hide_deleted_devlogs(scope)
     deleted_ids = Post::Devlog.unscoped.deleted.pluck(:id)
     scope.where.not(postable_type: "Post::Devlog", postable_id: deleted_ids)
+  end
+
+  def hide_deleted_reposts(scope)
+    deleted_ids = Post::Repost.unscoped.deleted.pluck(:id)
+    scope.where.not(postable_type: "Post::Repost", postable_id: deleted_ids)
   end
 
   def hide_rejected_ships(scope)

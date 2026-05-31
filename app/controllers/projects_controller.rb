@@ -70,16 +70,20 @@ class ProjectsController < ApplicationController
     end
 
 
-    load_posts = -> {
-      @project.posts
-               .visible_to(current_user)
-               .includes(postable: [ :attachments_attachments ])
-               .order(created_at: :desc)
-               .select { |post| post.postable.present? }
+    load_posts = ->(include_deleted_devlogs: false) {
+      scope = @project.posts
+                       .visible_to(current_user)
+                       .includes(postable: [ :attachments_attachments ])
+                       .order(created_at: :desc)
+      unless include_deleted_devlogs
+        scope = scope.left_outer_joins("LEFT JOIN post_devlogs ON posts.postable_type = 'Post::Devlog' AND posts.postable_id = post_devlogs.id")
+                     .where("posts.postable_type != 'Post::Devlog' OR post_devlogs.deleted_at IS NULL")
+      end
+      scope.select { |post| post.postable.present? }
     }
 
     @posts = if policy(@project).view_deleted_devlogs?
-      Post::Devlog.unscoped { load_posts.call }
+      load_posts.call(include_deleted_devlogs: true)
     else
       load_posts.call
     end
