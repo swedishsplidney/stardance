@@ -201,14 +201,6 @@ class Project < ApplicationRecord
     shipped_at.present? || !draft?
   end
 
-  def restore!
-    update!(deleted_at: nil)
-  end
-
-  def deleted?
-    deleted_at.present?
-  end
-
   def display_description
     description.to_s
   end

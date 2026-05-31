@@ -16,8 +16,7 @@ class Posts::RepostsController < ApplicationController
     @repost = existing_repost || raise(ActiveRecord::RecordNotFound)
     authorize @repost
 
-    @repost.post&.destroy!
-    @repost.destroy! if @repost.persisted?
+    @repost.soft_delete!
 
     redirect_back fallback_location: fallback_path, notice: "Repost removed."
   end

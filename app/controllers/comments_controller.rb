@@ -17,7 +17,7 @@ class CommentsController < ApplicationController
   def destroy
     authorize @comment
 
-    @comment.destroy
+    @comment.soft_delete!
 
     redirect_back fallback_location: fallback_path
   end

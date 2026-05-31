@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_30_182421) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_31_022447) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -214,10 +214,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_30_182421) do
     t.bigint "commentable_id", null: false
     t.string "commentable_type", null: false
     t.datetime "created_at", null: false
+    t.datetime "deleted_at"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["commentable_type", "commentable_id", "created_at"], name: "index_comments_on_commentable_and_created_at"
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
+    t.index ["deleted_at"], name: "index_comments_on_deleted_at"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
@@ -517,10 +519,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_30_182421) do
   create_table "post_reposts", force: :cascade do |t|
     t.string "body"
     t.datetime "created_at", null: false
+    t.datetime "deleted_at"
     t.bigint "original_post_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["original_post_id", "user_id"], name: "index_post_reposts_on_original_post_id_and_user_id", unique: true
+    t.index ["deleted_at"], name: "index_post_reposts_on_deleted_at"
+    t.index ["original_post_id", "user_id"], name: "index_post_reposts_active_unique", unique: true, where: "(deleted_at IS NULL)"
     t.index ["original_post_id"], name: "index_post_reposts_on_original_post_id"
     t.index ["user_id"], name: "index_post_reposts_on_user_id"
   end

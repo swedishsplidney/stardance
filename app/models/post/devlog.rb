@@ -93,6 +93,7 @@ class Post::Devlog < ApplicationRecord
 
   after_create_commit :handle_post_creation
   after_update_commit :update_project_duration_if_changed
+  after_update_commit :update_devlogs_count_on_soft_delete
 
   def recalculate_seconds_coded
     return false unless post.project.hackatime_keys.present?
@@ -108,19 +109,6 @@ class Post::Devlog < ApplicationRecord
   rescue => e
     Rails.logger.error("Unexpected error in recalculate_seconds_coded for Devlog #{id}: #{e.message}")
     false
-  end
-
-  # Soft delete methods
-  def soft_delete!
-    update!(deleted_at: Time.current)
-  end
-
-  def restore!
-    update!(deleted_at: nil)
-  end
-
-  def deleted?
-    deleted_at.present?
   end
 
   # Version history methods
@@ -169,5 +157,15 @@ class Post::Devlog < ApplicationRecord
     return unless saved_change_to_duration_seconds?
 
     post&.project&.recalculate_duration_seconds!
+  end
+
+  def update_devlogs_count_on_soft_delete
+    return unless saved_change_to_deleted_at?
+
+    project_id = post&.project_id
+    return unless project_id
+
+    delta = deleted_at.present? ? -1 : 1
+    Project.unscoped.where(id: project_id).update_counters(devlogs_count: delta)
   end
 end
