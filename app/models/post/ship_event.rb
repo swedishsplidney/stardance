@@ -48,7 +48,7 @@ class Post::ShipEvent < ApplicationRecord
   VOTE_COST_PER_SHIP = 15
   BODY_MAX_LENGTH = Post::Devlog::BODY_MAX_LENGTH
   REVIEW_INSTRUCTIONS_MAX_LENGTH = 2_000
-  MAX_ATTACHMENTS = 4
+  MAX_ATTACHMENTS = 2
   ACCEPTED_CONTENT_TYPES = %w[image/jpeg image/png image/webp image/heic image/heif image/gif].freeze
 
   attr_accessor :uploading_attachments

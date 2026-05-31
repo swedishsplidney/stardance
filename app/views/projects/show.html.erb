@@ -417,21 +417,48 @@
               <% end %>
             <% end %>
           <% end %>
-          <% if unposted_seconds >= 15 * 60 %>
-            <%= render ActionButtonComponent.new(
-                  text: "Ship your project!",
-                  variant: :primary,
-                  type: :button,
-                  icon: "icons/rocket.png",
-                  onclick: "document.getElementById('ship-warning-modal-' + #{@project.id.to_json}).showModal()"
-                ) %>
+          <% if @project.shippable? %>
+            <% if unposted_seconds >= 15 * 60 %>
+              <%= render ActionButtonComponent.new(
+                    text: "Ship your project!",
+                    variant: :primary,
+                    type: :button,
+                    icon: "icons/rocket.png",
+                    onclick: "document.getElementById('ship-warning-modal-' + #{@project.id.to_json}).showModal()"
+                  ) %>
+            <% else %>
+              <%= render ActionButtonComponent.new(
+                    text: "Ship your project!",
+                    variant: :primary,
+                    type: :button,
+                    icon: "icons/rocket.png",
+                    onclick: "document.getElementById('ship-video-modal-' + #{@project.id.to_json}).showModal()"
+                  ) %>
+            <% end %>
           <% else %>
+            <%
+              ship_disabled_message =
+                if !@project.has_devlog_since_last_ship?
+                  "Post at least one devlog before shipping!"
+                elsif !@project.info_complete?
+                  "Complete your project info before shipping!"
+                else
+                  # Some other requirement (payout, vote balance, rejection,
+                  # tracked time) isn't met — tell them which one.
+                  @project.ship_blocker_message || "Finish the remaining requirements before shipping."
+                end
+            %>
             <%= render ActionButtonComponent.new(
                   text: "Ship your project!",
-                  variant: :primary,
+                  variant: :secondary,
                   type: :button,
                   icon: "icons/rocket.png",
-                  onclick: "document.getElementById('ship-video-modal-' + #{@project.id.to_json}).showModal()"
+                  disabled: :soft,
+                  data: {
+                    controller: "tooltip",
+                    tooltip_message_value: ship_disabled_message,
+                    tooltip_position_value: "top"
+                  }
                 ) %>
           <% end %>
         </nav>
