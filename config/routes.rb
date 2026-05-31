@@ -9,6 +9,8 @@
 #                                      rsvps POST   /rsvps(.:format)                                                                                  rsvps#create
 #                               confirm_rsvp GET    /rsvps/confirm/:token(.:format)                                                                   rsvps#confirm
 #                                    tic_tac GET    /tic_tac(.:format)                                                                                rsvps#tic_tac {format: :text}
+#                api_v1_ambassador_referrals GET    /api/v1/ambassador_referrals(.:format)                                                            api/v1/ambassador_referrals#index {format: :json}
+#                 api_v1_ambassador_referral GET    /api/v1/ambassador_referrals/:id(.:format)                                                        api/v1/ambassador_referrals#show {format: :json}
 #                                       shop GET    /shop(.:format)                                                                                   shop/items#index
 #                                  shop_item GET    /shop/items/:id(.:format)                                                                         shop/items#show
 #                          cancel_shop_order DELETE /shop/orders/:id/cancel(.:format)                                                                 shop/orders#cancel
@@ -39,6 +41,7 @@
 #                                  dev_login GET    /dev_login/:id(.:format)                                                                          sessions#dev_login
 #                             oauth_callback GET    /oauth/callback(.:format)                                                                         sessions#create
 #                                       home GET    /home(.:format)                                                                                   home#index
+#                                  home_feed GET    /home/feed(.:format)                                                                              home/feeds#show
 #                                leaderboard GET    /leaderboard(.:format)                                                                            leaderboard#index
 #                                     events GET    /events(.:format)                                                                                 events#index
 #                                 my_balance GET    /my/balance(.:format)                                                                             my/balances#show
@@ -64,6 +67,8 @@
 #                       onboarding_interests GET    /onboarding/interests(.:format)                                                                   onboarding/wizard#interests
 #                                            POST   /onboarding/interests(.:format)                                                                   onboarding/wizard#submit_interests
 #                onboarding_interests_result GET    /onboarding/interests_result(.:format)                                                            onboarding/wizard#interests_result
+#                        onboarding_referral GET    /onboarding/referral(.:format)                                                                    onboarding/wizard#referral
+#                                            POST   /onboarding/referral(.:format)                                                                    onboarding/wizard#submit_referral
 #                            onboarding_name GET    /onboarding/name(.:format)                                                                        onboarding/wizard#name
 #                                            POST   /onboarding/name(.:format)                                                                        onboarding/wizard#submit_name
 #                     onboarding_guest_email GET    /onboarding/guest_email(.:format)                                                                 onboarding/wizard#guest_email
@@ -207,7 +212,8 @@
 #               preview_time_project_devlogs GET    /projects/:project_id/devlogs/preview_time(.:format)                                              projects/devlogs#preview_time
 #                            project_devlogs POST   /projects/:project_id/devlogs(.:format)                                                           projects/devlogs#create
 #                        edit_project_devlog GET    /projects/:project_id/devlogs/:id/edit(.:format)                                                  projects/devlogs#edit
-#                             project_devlog PATCH  /projects/:project_id/devlogs/:id(.:format)                                                       projects/devlogs#update
+#                             project_devlog GET    /projects/:project_id/devlogs/:id(.:format)                                                       projects/devlogs#show
+#                                            PATCH  /projects/:project_id/devlogs/:id(.:format)                                                       projects/devlogs#update
 #                                            PUT    /projects/:project_id/devlogs/:id(.:format)                                                       projects/devlogs#update
 #                                            DELETE /projects/:project_id/devlogs/:id(.:format)                                                       projects/devlogs#destroy
 #                            project_reports POST   /projects/:project_id/reports(.:format)                                                           projects/reports#create
