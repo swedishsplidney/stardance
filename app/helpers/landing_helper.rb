@@ -9,11 +9,4 @@ module LandingHelper
     { url: "https://github.com/SteveMan67/platformed", mod: 5, by: "By Steve, 16", img: "landing/projects/steve.avif", alt: "Project by Steve", desc: "A platformer with a fully functioning level editor, online level sharing, and trigger system, built from the ground up in Javascript for Flavortown." }
   ].freeze
 
-  def landing_static_sections_cache_key
-    [
-      "landing/static-sections/v1",
-      @new_onboarding,
-      Rails.application.config.git_version
-    ]
-  end
 end
