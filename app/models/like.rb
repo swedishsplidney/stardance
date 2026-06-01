@@ -31,7 +31,7 @@ class Like < ApplicationRecord
 
   private
     def send_gorse_like_later
-      if likeable_type == "Post::Devlog" && likeable.post.present?
+      if likeable_type == "Post::Devlog" && likeable&.post.present?
         send_gorse_feedback_later(user: user, item: likeable.post, feedback_type: :like, timestamp: created_at)
       end
     end

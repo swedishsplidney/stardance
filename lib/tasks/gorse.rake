@@ -21,13 +21,13 @@ namespace :gorse do
 
     puts "Syncing feedback..."
     Like.includes(:user, likeable: :post).find_each do |like|
-      if like.likeable_type == "Post::Devlog" && like.likeable.post.present?
+      if like.likeable_type == "Post::Devlog" && like.likeable&.post.present?
         like.send_gorse_feedback_later(user: like.user, item: like.likeable.post, feedback_type: :like, timestamp: like.created_at)
       end
     end
 
     Comment.includes(:user, commentable: :post).find_each do |comment|
-      if comment.commentable_type == "Post::Devlog" && comment.commentable.post.present?
+      if comment.commentable_type == "Post::Devlog" && comment.commentable&.post.present?
         comment.send_gorse_feedback_later(user: comment.user, item: comment.commentable.post, feedback_type: :comment, timestamp: comment.created_at)
       end
     end

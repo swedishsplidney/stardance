@@ -51,7 +51,7 @@ class Comment < ApplicationRecord
   end
 
   def send_gorse_comment_later
-    if commentable_type == "Post::Devlog" && commentable.post.present?
+    if commentable_type == "Post::Devlog" && commentable&.post.present?
       send_gorse_feedback_later(user: user, item: commentable.post, feedback_type: :comment, timestamp: created_at)
     end
   end
