@@ -362,10 +362,17 @@
         <% if @show_project_onboarding %>
       <section class="project-show__onboarding" aria-labelledby="project-show-onboarding-title">
         <header class="project-show__onboarding-header">
-          <h2 class="project-show__onboarding-header-title" id="project-show-onboarding-title">Welcome to your new macropad!</h2>
+          <h2 class="project-show__onboarding-header-title" id="project-show-onboarding-title">Hackpad!</h2>
+        <%= image_tag "https://hackpad.hackclub.com/orpheuspadpic.png",
+                      alt: "Orpheus macropad",
+                      width: 240,
+                      class: "project-show__onboarding-image",
+                      style: "height: auto;" %>
+          <p class="project-show__onboarding-header-body">
+            Open the guide to start designing your macropad!
           <% if !@hackatime_linked %>
             <p class="project-show__onboarding-header-body">
-              Open the guide to start designing your macropad. After designing it, Link Hackatime to track your software progress! Post a devlog after and unlock free stickers in the shop!
+              Link Hackatime to track your software progress! Post a devlog after and unlock free stickers in the shop!
             </p>
           <% else current_user && !current_user.shop_tutorial_completed? %>
             <p class="project-show__onboarding-header-body">
