@@ -10,7 +10,7 @@
     <!-- Hero: tickets + week progress -->
     <% if @week %>
       <div class="raffle-hero-panel">
-        <%= image_tag "raffle/globe.png", class: "raffle-hero-panel__globe", alt: "", aria_hidden: "true", loading: "lazy" %>
+        <%= image_tag "landing/space/moon.png", class: "raffle-hero-panel__globe", alt: "", aria_hidden: "true", loading: "lazy" %>
         <%= render "raffle/shared/week_track", current: @week_number %>
       </div>
     <% else %>
