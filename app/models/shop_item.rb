@@ -294,15 +294,6 @@ class ShopItem < ApplicationRecord
     sale_percentage.present? && sale_percentage > 0
   end
 
-  def average_hours_estimated
-    return 0 unless ticket_cost.present?
-    ticket_cost / (Rails.configuration.game_constants.tickets_per_dollar * Rails.configuration.game_constants.dollars_per_mean_hour)
-  end
-
-  def hours_estimated
-    average_hours_estimated.to_i
-  end
-
   def fixed_estimate(price)
     return 0 unless price.present? && price > 0
     price / (Rails.configuration.game_constants.tickets_per_dollar * Rails.configuration.game_constants.dollars_per_mean_hour)
