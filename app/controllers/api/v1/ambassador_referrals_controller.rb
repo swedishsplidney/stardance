@@ -31,7 +31,6 @@ class Api::V1::AmbassadorReferralsController < Api::V1::BaseController
 
       {
         prefix: Rsvp::AMBASSADOR_REFERRAL_PREFIX,
-        rsvp: rsvp_mode,
         count: referrals.size,
         referrals: referrals
       }
@@ -44,7 +43,7 @@ class Api::V1::AmbassadorReferralsController < Api::V1::BaseController
         user.ambassador_referral_payload(
           hours_logged: hours(metrics.logged_seconds[user.id]),
           hours_approved: hours(metrics.approved_seconds[user.id])
-        )
+        ).merge(rsvp: false)
       end
     end
 
@@ -56,6 +55,7 @@ class Api::V1::AmbassadorReferralsController < Api::V1::BaseController
       rsvps.map do |rsvp|
         user = users_by_email[rsvp.email.to_s.downcase]
         rsvp.ambassador_referral_payload.merge(
+          rsvp: user.blank?,
           verification_status: user&.verification_status,
           hours_logged: user ? hours(metrics.logged_seconds[user.id]) : nil,
           hours_approved: user ? hours(metrics.approved_seconds[user.id]) : nil
