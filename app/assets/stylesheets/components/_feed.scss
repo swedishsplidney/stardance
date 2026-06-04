@@ -794,6 +794,7 @@
     height: 25px;
     fill: currentColor;
     color: currentColor;
+    opacity: 1;
   }
 
   &__action:hover,
@@ -909,17 +910,13 @@
     display: flex;
   }
 
-  .like-button__btn {
-    padding: 0;
-    border-radius: 0;
-  }
-
   .like-button__btn--liked {
-    color: var(--color-space-accent);
+    color: var(--color-space-text);
   }
 
   .like-button__count {
     font-size: calc(var(--font-size-s) * 1.2);
+    opacity: 1;
   }
 
   &__more {
