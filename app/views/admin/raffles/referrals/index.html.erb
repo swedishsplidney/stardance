@@ -12,16 +12,15 @@
 
 <table>
   <thead>
-    <tr><th>Referrer</th><th>Referred user</th><th>Channel</th><th>Status</th><th>Tickets</th><th>Week</th><th>Actions</th></tr>
+    <tr><th>Referrer</th><th>Referred user</th><th>Channel</th><th>Status</th><th>Week</th><th>Actions</th></tr>
   </thead>
   <tbody>
     <% @referrals.each do |referral| %>
       <tr>
-        <td><%= link_to referral.participant.github_login, admin_raffles_participant_path(referral.participant) %></td>
+        <td><%= link_to referral.participant.display_name, admin_raffles_participant_path(referral.participant) %></td>
         <td><%= referral.referred_user&.display_name || "User ##{referral.referred_user_id}" %></td>
         <td><%= referral.channel %></td>
         <td><%= referral.status %></td>
-        <td><%= referral.tickets_awarded %></td>
         <td><%= referral.credited_week&.number || "—" %></td>
         <td>
           <% unless referral.status_verified? %>

@@ -10,7 +10,6 @@ module Admin
         @pagy, @referrals = pagy(:offset, referrals_scope)
       end
 
-      # Manual override of a referral's state (verify / reject / reset to pending).
       def update
         authorize :admin, :access_raffles?
 
@@ -24,14 +23,13 @@ module Admin
           end
 
           @referral.paper_trail_event = "manual_verify"
-          @referral.update!(status: :verified, tickets_awarded: 20,
-                            credited_week: week, verified_at: Time.current)
+          @referral.update!(status: :verified, credited_week: week, verified_at: Time.current)
         when "rejected"
           @referral.paper_trail_event = "manual_reject"
-          @referral.update!(status: :rejected, tickets_awarded: 0, credited_week: nil)
+          @referral.update!(status: :rejected, credited_week: nil)
         when "pending"
           @referral.paper_trail_event = "manual_reset"
-          @referral.update!(status: :pending, tickets_awarded: 0, credited_week: nil, verified_at: nil)
+          @referral.update!(status: :pending, credited_week: nil, verified_at: nil)
         else
           return redirect_back fallback_location: admin_raffles_referrals_path,
                                allow_other_host: false,

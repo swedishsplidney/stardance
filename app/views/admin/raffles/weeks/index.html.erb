@@ -5,7 +5,7 @@
 
 <table>
   <thead>
-    <tr><th>Week</th><th>Status</th><th>Prize</th><th>Opened</th><th>Closed</th><th>Actions</th></tr>
+    <tr><th>Week</th><th>Status</th><th>Prize</th><th>Winner</th><th>Opened</th><th>Closed</th><th>Actions</th></tr>
   </thead>
   <tbody>
     <% @weeks.each do |week| %>
@@ -13,10 +13,15 @@
         <td><%= link_to "Week #{week.number}", admin_raffles_week_path(week) %></td>
         <td><%= week.status %></td>
         <td><%= week.prize %></td>
+        <td><%= week.winner_participant&.display_name || "—" %></td>
         <td><%= week.opened_at&.to_date || "—" %></td>
         <td><%= week.closed_at&.to_date || "—" %></td>
         <td>
           <% if week.status_active? %>
+            <% unless week.drawn? %>
+              <%= button_to "Draw winner", draw_admin_raffles_week_path(week), method: :post,
+                            data: { turbo_confirm: "Draw a winner for week #{week.number}?" } %>
+            <% end %>
             <%= button_to "Close & open next", close_admin_raffles_week_path(week), method: :post,
                           data: { turbo_confirm: "Archive week #{week.number} and open the next?" } %>
           <% end %>

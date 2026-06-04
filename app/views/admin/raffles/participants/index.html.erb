@@ -4,20 +4,22 @@
 <h1>Participants</h1>
 
 <%= form_with url: admin_raffles_participants_path, method: :get do %>
-  <%= text_field_tag :query, @query, placeholder: "login, code, or email", autocomplete: "off" %>
+  <%= text_field_tag :query, @query, placeholder: "display name or code", autocomplete: "off" %>
   <%= submit_tag "Search" %>
 <% end %>
 
 <table>
   <thead>
-    <tr><th>Login</th><th>Code</th><th>Email</th><th>Referrals</th><th>Joined</th></tr>
+    <tr><th>User</th><th>Code</th><th>Type</th><th>Country</th><th>Eligible</th><th>Referrals</th><th>Joined</th></tr>
   </thead>
   <tbody>
     <% @participants.each do |participant| %>
       <tr>
-        <td><%= link_to participant.github_login, admin_raffles_participant_path(participant) %></td>
+        <td><%= link_to participant.display_name, admin_raffles_participant_path(participant) %></td>
         <td><code><%= participant.code %></code></td>
-        <td><%= participant.github_email || "—" %></td>
+        <td><%= participant.age_group %></td>
+        <td><%= participant.user&.geocoded_country || "—" %></td>
+        <td><%= participant.eligible? ? "Yes" : "No" %></td>
         <td><%= @referral_counts[participant.id].to_i %></td>
         <td><%= participant.created_at.to_date %></td>
       </tr>
