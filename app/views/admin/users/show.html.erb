@@ -90,6 +90,12 @@
             </dd>
           <% end %>
         <% end %>
+                                <% if policy(@user).unlink_identity? %>
+            <%= button_to "Unlink",
+                          admin_user_identity_path(@user, identity),
+                          method: :delete,
+                          data: { confirm: "Are you sure you want to unlink the #{identity.provider.titleize} identity (#{identity.uid}) from #{@user.display_name}? This cannot be undone." } %>
+          <% end %>
       </dl>
     </div>
   </div>
