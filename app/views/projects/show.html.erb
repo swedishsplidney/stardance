@@ -612,10 +612,12 @@
         <% @posts.each do |post| %>
           <% if post.postable_type == "Post::ShipEvent" %>
             <% ship_index += 1 %>
+            <% recert_id = (is_member && @project.needs_changes? && ship_index == 1) ? "recert-modal-#{@project.id}" : nil %>
             <%= render "projects/ship_card",
                        post: post,
                        project: @project,
-                       ship_number: ship_count - ship_index + 1 %>
+                       ship_number: ship_count - ship_index + 1,
+                       recert_modal_id: recert_id %>
           <% else %>
             <%= render PostComponent.new(post: post, current_user: current_user, theme: :profile_dark) %>
           <% end %>
@@ -666,6 +668,56 @@
     <% end %>
 
   </div>
+
+  <% if is_member && @project.needs_changes? %>
+    <% recert_review = @project.ship_reviews.order(created_at: :desc).first %>
+    <dialog id="recert-modal-<%= @project.id %>"
+            class="recert-modal"
+            data-controller="modal"
+            aria-labelledby="recert-modal-<%= @project.id %>-title">
+      <div class="recert-modal__panel">
+        <button type="button"
+                class="recert-modal__close"
+                onclick="document.getElementById('recert-modal-<%= @project.id %>').close()"
+                aria-label="Close">
+          &times;
+        </button>
+
+        <h3 id="recert-modal-<%= @project.id %>-title" class="recert-modal__title">Changes requested</h3>
+        <p class="recert-modal__subtitle">Your reviewer left feedback below. Address it and then request re-certification.</p>
+
+        <% if recert_review&.verdict_video&.attached? %>
+          <div class="recert-modal__video-wrap">
+            <video class="recert-modal__video"
+                   controls
+                   preload="metadata"
+                   src="<%= rails_blob_path(recert_review.verdict_video, disposition: :inline) %>">
+            </video>
+          </div>
+        <% end %>
+
+        <% if recert_review&.feedback.present? %>
+          <div class="recert-modal__feedback">
+            <h4 class="recert-modal__feedback-label">Reviewer feedback</h4>
+            <p class="recert-modal__feedback-body"><%= recert_review.feedback %></p>
+          </div>
+        <% end %>
+
+        <div class="recert-modal__actions">
+          <button type="button"
+                  class="recert-modal__btn recert-modal__btn--secondary"
+                  onclick="document.getElementById('recert-modal-<%= @project.id %>').close()">
+            Close
+          </button>
+          <%= button_to "Request re-certification",
+                project_recertification_path(@project),
+                method: :post,
+                class: "recert-modal__btn recert-modal__btn--primary",
+                form: { data: { turbo_confirm: "Have you addressed the feedback? This will re-enter the review queue." } } %>
+        </div>
+      </div>
+    </dialog>
+  <% end %>
 
   <% if is_member && @composer_devlog && @composer_projects %>
     <dialog id="composer-modal-<%= @project.id %>"
