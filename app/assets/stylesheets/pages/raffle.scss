@@ -1111,19 +1111,6 @@
   }
 }
 
-.raffle-widget__claim-cta {
-  display: block;
-  margin-top: 4px;
-  color: var(--color-brand-teal);
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
 .raffle-widget__raffle-link {
   margin-top: var(--space-s);
   padding-top: var(--space-s);
