@@ -1,3 +1,4 @@
 Mjml.setup do |config|
-  config.mjml_binary = Rails.root.join("node_modules/.bin/mjml").to_s
+  mjml_path = Rails.root.join("node_modules/.bin/mjml")
+  config.mjml_binary = mjml_path.to_s if mjml_path.exist?
 end
