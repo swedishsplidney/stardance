@@ -257,6 +257,8 @@ class User < ApplicationRecord
   REFERRAL_ACHIEVEMENTS = { referral_2: 2, referral_5: 5 }.freeze
 
   def sync_referral_achievements!
+    return unless Flipper.enabled?(:week_2_release, self)
+
     count = verified_referral_count
     REFERRAL_ACHIEVEMENTS.each do |slug, threshold|
       if count >= threshold
