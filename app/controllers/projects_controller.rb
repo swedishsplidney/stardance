@@ -106,7 +106,7 @@ class ProjectsController < ApplicationController
       entry.is_a?(Certification::Ship) ? entry.decided_on : entry.created_at
     end.reverse
 
-    @show_project_onboarding = @is_member && @posts.empty?
+    @show_project_onboarding = @is_member && @timeline_entries.empty?
     @project_onboarding_mission = @project.current_mission
 
     @available_missions = if @is_member && @project.current_mission.nil? && !@project.shipped?

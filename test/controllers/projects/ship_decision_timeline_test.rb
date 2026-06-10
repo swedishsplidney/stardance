@@ -40,6 +40,16 @@ class Projects::ShipDecisionTimelineTest < ActionDispatch::IntegrationTest
     assert_select ".ship-decision-card__feedback-body", text: /Tighten the demo video\./
   end
 
+  test "a verdict suppresses the project onboarding banner even with no posts" do
+    sign_in @owner
+
+    get project_path(@project)
+
+    assert_response :success
+    assert_select ".ship-decision-card", 1
+    assert_select ".project-show__onboarding", 0
+  end
+
   test "an outsider does not see the verdict card" do
     sign_in @outsider
 
