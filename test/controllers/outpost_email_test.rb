@@ -26,6 +26,7 @@ class OutpostEmailTest < ActionDispatch::IntegrationTest
         get "/outpost"
       end
     end
+    assert_redirected_to guide_path(:outpost)
     assert_not_nil @user.reload.outpost_email_sent_at
 
     # A second visit must not enqueue another email or channel add.
@@ -45,6 +46,8 @@ class OutpostEmailTest < ActionDispatch::IntegrationTest
   end
 
   test "logged-out /outpost visit defers the email until sign in" do
+    # Logged-out visitors are not redirected to the guide; they stay on the
+    # landing page to sign up first.
     assert_no_enqueued_emails { get "/outpost" }
     assert_response :success
     assert_nil @user.reload.outpost_email_sent_at

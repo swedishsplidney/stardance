@@ -16,7 +16,15 @@ module OutpostEmailing
   def handle_outpost_email
     return unless Flipper.enabled?(:outpost_email)
 
-    mark_outpost_visit if params[:ref] == OUTPOST_REF
+    if params[:ref] == OUTPOST_REF
+      mark_outpost_visit
+      # Signed-in visitors get the email and go straight to the guide. Logged-out
+      # visitors stay on the landing page to sign up first; their email and any
+      # redirect are deferred until they sign in.
+      redirect_to guide_path(:outpost) if current_user
+      return
+    end
+
     deliver_pending_outpost_email
   end
 
