@@ -24,7 +24,7 @@ class Admin::Certification::ShipsController < Admin::Certification::ApplicationC
     scope = scope.by_project_type(@project_type) if @project_type.present?
 
     @pagy, @ships = pagy(:offset,
-                         scope.includes(:reviewer, project: { memberships: :user })
+                         scope.includes(:reviewer, :returned_by, project: { memberships: :user })
                               .order(created_at: @sort == "newest" ? :desc : :asc),
                          limit: 25)
 

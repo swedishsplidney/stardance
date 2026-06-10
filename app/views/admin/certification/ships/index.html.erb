@@ -229,7 +229,11 @@
                   </div>
                 </td>
                 <td class="ship-queue__cell-status">
-                  <span class="status-pill status-pill--<%= ship.status %>"><%= ship.status.capitalize %></span>
+                  <% if ship.recert_reason.present? || ship.returned_by.present? %>
+                    <span class="status-pill status-pill--returned">Bad Review</span>
+                  <% else %>
+                    <span class="status-pill status-pill--<%= ship.status %>"><%= ship.status.capitalize %></span>
+                  <% end %>
                 </td>
                 <td class="ship-queue__cell-action">
                   <% if own_project %>
@@ -252,7 +256,11 @@
           <% card_body = capture do %>
             <div class="ship-queue__card-top">
               <span class="ship-queue__project-title"><%= ship.project.title %></span>
-              <span class="status-pill status-pill--<%= ship.status %>"><%= ship.status.capitalize %></span>
+              <% if ship.recert_reason.present? || ship.returned_by.present? %>
+                <span class="status-pill status-pill--returned">Bad Review</span>
+              <% else %>
+                <span class="status-pill status-pill--<%= ship.status %>"><%= ship.status.capitalize %></span>
+              <% end %>
             </div>
             <div class="ship-queue__project-meta">
               <span>#<%= ship.id %></span>

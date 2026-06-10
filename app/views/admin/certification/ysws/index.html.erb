@@ -1,7 +1,4 @@
 <% content_for :title, "YSWS Review Queue" %>
-<% content_for :stylesheets do %>
-  <%= stylesheet_link_tag "admin", "data-turbo-track": "reload" %>
-<% end %>
 
 <main class="certification-ysws" role="main">
   <h1>YSWS Review Queue</h1>
@@ -29,10 +26,14 @@
             <tr>
               <td>#<%= review.id %></td>
               <td>
-                <%= review.project.project_type.presence || tag.span("—", style: "opacity: 0.5;") %>
+                <%= review.project&.project_type.presence || tag.span("—", style: "opacity: 0.5;") %>
               </td>
               <td>
-                <%= link_to review.project.title, admin_project_path(review.project), class: "btn-primary slim" %>
+                <% if review.project %>
+                  <%= link_to review.project.title, admin_project_path(review.project), class: "btn-primary slim" %>
+                <% else %>
+                  <span style="opacity: 0.5;">—</span>
+                <% end %>
               </td>
               <td>
                 <%= link_to review.user.display_name || "Unknown", admin_user_path(review.user), class: "btn-primary slim" %><br>
