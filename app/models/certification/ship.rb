@@ -275,8 +275,8 @@ module Certification
           "COUNT(*) AS total",
           "SUM(CASE WHEN certification_ship_reviews.status = #{approved_int} THEN 1 ELSE 0 END) AS approved_count",
           "SUM(CASE WHEN certification_ship_reviews.status = #{returned_int} THEN 1 ELSE 0 END) AS returned_count",
-          sanitize_sql_array(["SUM(CASE WHEN certification_ship_reviews.decided_at >= ? THEN 1 ELSE 0 END) AS today_count", today_start]),
-          sanitize_sql_array(["SUM(CASE WHEN certification_ship_reviews.decided_at >= ? THEN 1 ELSE 0 END) AS week_count", week_start])
+          sanitize_sql_array([ "SUM(CASE WHEN certification_ship_reviews.decided_at >= ? THEN 1 ELSE 0 END) AS today_count", today_start ]),
+          sanitize_sql_array([ "SUM(CASE WHEN certification_ship_reviews.decided_at >= ? THEN 1 ELSE 0 END) AS week_count", week_start ])
         )
     end
 

@@ -14,7 +14,9 @@ export default class extends Controller {
       });
     };
     window.addEventListener("scroll", this.onScroll, { passive: true });
-    this.sections = [...document.querySelectorAll(".ship-monitor__section[id]")];
+    this.sections = [
+      ...document.querySelectorAll(".ship-monitor__section[id]"),
+    ];
     this.updateActive();
   }
 
@@ -24,7 +26,8 @@ export default class extends Controller {
 
   scrollTo(e) {
     e.preventDefault();
-    document.querySelector(e.currentTarget.getAttribute("href"))
+    document
+      .querySelector(e.currentTarget.getAttribute("href"))
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -36,7 +39,10 @@ export default class extends Controller {
     }
     if (!active) return;
     this.linkTargets.forEach((link) => {
-      link.classList.toggle("is-active", link.getAttribute("href") === `#${active.id}`);
+      link.classList.toggle(
+        "is-active",
+        link.getAttribute("href") === `#${active.id}`,
+      );
     });
   }
 }

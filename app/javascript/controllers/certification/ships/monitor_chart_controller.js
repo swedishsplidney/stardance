@@ -25,16 +25,26 @@ function hexToRgba(hex, alpha) {
 
 export default class extends Controller {
   static targets = [
-    "queueSize", "medianWait", "net", "throughput", "verdict", "rate", "participation",
-    "reviewerPicker", "reviewerTotals",
-    "reviewerDecisions", "reviewerReturned", "reviewerApproved", "reviewerRejections",
+    "queueSize",
+    "medianWait",
+    "net",
+    "throughput",
+    "verdict",
+    "rate",
+    "participation",
+    "reviewerPicker",
+    "reviewerTotals",
+    "reviewerDecisions",
+    "reviewerReturned",
+    "reviewerApproved",
+    "reviewerRejections",
   ];
   static values = { data: Array, reviewerData: Array };
 
   connect() {
-    this.charts            = [];
+    this.charts = [];
     this.selectedReviewers = new Set();
-    this.reviewerCharts    = [];
+    this.reviewerCharts = [];
 
     const cfg = this.baseCfg();
 
@@ -50,22 +60,22 @@ export default class extends Controller {
 
   baseCfg() {
     const gridColor = "rgba(255,255,255,0.06)";
-    const tickFont  = { family: "var(--font-family-sans)", size: 10 };
+    const tickFont = { family: "var(--font-family-sans)", size: 10 };
     const tickColor = "rgba(255,255,255,0.45)";
     return {
       gridColor,
       xScale: {
         ticks: { color: tickColor, font: tickFont, maxTicksLimit: 10 },
-        grid:  { color: gridColor },
+        grid: { color: gridColor },
       },
       yScale: {
         ticks: { color: tickColor, font: tickFont, precision: 0 },
-        grid:  { color: gridColor },
+        grid: { color: gridColor },
       },
       legend: {
         labels: {
-          color:    "rgba(255,255,255,0.7)",
-          font:     { family: "var(--font-family-sans)", size: 11 },
+          color: "rgba(255,255,255,0.7)",
+          font: { family: "var(--font-family-sans)", size: 11 },
           boxWidth: 12,
         },
       },
@@ -74,8 +84,8 @@ export default class extends Controller {
   }
 
   renderActivityCharts({ xScale, yScale, gridColor, legend, tooltip }) {
-    const data    = this.dataValue;
-    const labels  = data.map((d) => d.date);
+    const data = this.dataValue;
+    const labels = data.map((d) => d.date);
     const netData = data.map((d) => d.approved + d.returned - d.submitted);
 
     this.charts.push(
@@ -83,16 +93,21 @@ export default class extends Controller {
         type: "line",
         data: {
           labels,
-          datasets: [{
-            label: "Queue size",
-            data: data.map((d) => d.queue_size),
-            borderColor: "#FFD598",
-            backgroundColor: "rgba(255,213,152,0.12)",
-            fill: true, tension: 0.3, pointRadius: 2,
-          }],
+          datasets: [
+            {
+              label: "Queue size",
+              data: data.map((d) => d.queue_size),
+              borderColor: "#FFD598",
+              backgroundColor: "rgba(255,213,152,0.12)",
+              fill: true,
+              tension: 0.3,
+              pointRadius: 2,
+            },
+          ],
         },
         options: {
-          responsive: true, maintainAspectRatio: false,
+          responsive: true,
+          maintainAspectRatio: false,
           plugins: { legend: { labels: legend.labels }, tooltip },
           scales: { x: xScale, y: { ...yScale, min: 0 } },
         },
@@ -102,16 +117,22 @@ export default class extends Controller {
         type: "line",
         data: {
           labels,
-          datasets: [{
-            label: "Median wait (hours)",
-            data: data.map((d) => d.median_wait_hours ?? null),
-            borderColor: "#EBB7FF",
-            backgroundColor: "rgba(235,183,255,0.08)",
-            fill: true, tension: 0.3, pointRadius: 2, spanGaps: true,
-          }],
+          datasets: [
+            {
+              label: "Median wait (hours)",
+              data: data.map((d) => d.median_wait_hours ?? null),
+              borderColor: "#EBB7FF",
+              backgroundColor: "rgba(235,183,255,0.08)",
+              fill: true,
+              tension: 0.3,
+              pointRadius: 2,
+              spanGaps: true,
+            },
+          ],
         },
         options: {
-          responsive: true, maintainAspectRatio: false,
+          responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             legend: { labels: legend.labels },
             tooltip: {
@@ -120,7 +141,8 @@ export default class extends Controller {
                 label: (ctx) => {
                   const h = ctx.parsed.y;
                   if (h === null) return "  no data";
-                  const d = Math.floor(h / 24), rem = Math.round(h % 24);
+                  const d = Math.floor(h / 24),
+                    rem = Math.round(h % 24);
                   return d > 0 ? `  ${d}d ${rem}h` : `  ${rem}h`;
                 },
               },
@@ -128,7 +150,11 @@ export default class extends Controller {
           },
           scales: {
             x: xScale,
-            y: { ...yScale, min: 0, ticks: { ...yScale.ticks, callback: (v) => `${v}h` } },
+            y: {
+              ...yScale,
+              min: 0,
+              ticks: { ...yScale.ticks, callback: (v) => `${v}h` },
+            },
           },
         },
       }),
@@ -137,22 +163,25 @@ export default class extends Controller {
         type: "line",
         data: {
           labels,
-          datasets: [{
-            label: "Net (decisions − submissions)",
-            data: netData,
-            borderColor: "#81FFFF",
-            borderWidth: 1.5,
-            pointRadius: 2,
-            tension: 0.3,
-            fill: {
-              target: "origin",
-              above: "rgba(129,255,255,0.15)",
-              below: "rgba(255,213,152,0.2)",
+          datasets: [
+            {
+              label: "Net (decisions − submissions)",
+              data: netData,
+              borderColor: "#81FFFF",
+              borderWidth: 1.5,
+              pointRadius: 2,
+              tension: 0.3,
+              fill: {
+                target: "origin",
+                above: "rgba(129,255,255,0.15)",
+                below: "rgba(255,213,152,0.2)",
+              },
             },
-          }],
+          ],
         },
         options: {
-          responsive: true, maintainAspectRatio: false,
+          responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             legend: { labels: legend.labels },
             tooltip: {
@@ -188,19 +217,24 @@ export default class extends Controller {
               data: data.map((d) => d.approved + d.returned),
               borderColor: "#81FFFF",
               backgroundColor: "rgba(129,255,255,0.08)",
-              fill: true, tension: 0.3, pointRadius: 2,
+              fill: true,
+              tension: 0.3,
+              pointRadius: 2,
             },
             {
               label: "Submitted",
               data: data.map((d) => d.submitted),
               borderColor: "#EBB7FF",
               backgroundColor: "rgba(235,183,255,0.08)",
-              fill: true, tension: 0.3, pointRadius: 2,
+              fill: true,
+              tension: 0.3,
+              pointRadius: 2,
             },
           ],
         },
         options: {
-          responsive: true, maintainAspectRatio: false,
+          responsive: true,
+          maintainAspectRatio: false,
           plugins: { legend: { labels: legend.labels }, tooltip },
           scales: { x: xScale, y: yScale },
         },
@@ -216,19 +250,24 @@ export default class extends Controller {
               data: data.map((d) => d.approved),
               borderColor: "#81FFFF",
               backgroundColor: "rgba(129,255,255,0.08)",
-              fill: true, tension: 0.3, pointRadius: 2,
+              fill: true,
+              tension: 0.3,
+              pointRadius: 2,
             },
             {
               label: "Returned",
               data: data.map((d) => d.returned),
               borderColor: "#FFD598",
               backgroundColor: "rgba(255,213,152,0.08)",
-              fill: true, tension: 0.3, pointRadius: 2,
+              fill: true,
+              tension: 0.3,
+              pointRadius: 2,
             },
           ],
         },
         options: {
-          responsive: true, maintainAspectRatio: false,
+          responsive: true,
+          maintainAspectRatio: false,
           plugins: { legend: { labels: legend.labels }, tooltip },
           scales: { x: xScale, y: yScale },
         },
@@ -238,29 +277,45 @@ export default class extends Controller {
         type: "line",
         data: {
           labels,
-          datasets: [{
-            label: "Rejection rate",
-            data: data.map((d) => {
-              const total = d.approved + d.returned;
-              return total > 0 ? parseFloat(((d.returned / total) * 100).toFixed(1)) : null;
-            }),
-            borderColor: "#FFE564",
-            backgroundColor: "rgba(255,229,100,0.08)",
-            fill: true, tension: 0.3, pointRadius: 2, spanGaps: true,
-          }],
+          datasets: [
+            {
+              label: "Rejection rate",
+              data: data.map((d) => {
+                const total = d.approved + d.returned;
+                return total > 0
+                  ? parseFloat(((d.returned / total) * 100).toFixed(1))
+                  : null;
+              }),
+              borderColor: "#FFE564",
+              backgroundColor: "rgba(255,229,100,0.08)",
+              fill: true,
+              tension: 0.3,
+              pointRadius: 2,
+              spanGaps: true,
+            },
+          ],
         },
         options: {
-          responsive: true, maintainAspectRatio: false,
+          responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             legend: { labels: legend.labels },
             tooltip: {
               ...tooltip,
-              callbacks: { label: (ctx) => `  ${ctx.parsed.y !== null ? ctx.parsed.y + "%" : "no data"}` },
+              callbacks: {
+                label: (ctx) =>
+                  `  ${ctx.parsed.y !== null ? ctx.parsed.y + "%" : "no data"}`,
+              },
             },
           },
           scales: {
             x: xScale,
-            y: { ...yScale, min: 0, max: 100, ticks: { ...yScale.ticks, callback: (v) => `${v}%` } },
+            y: {
+              ...yScale,
+              min: 0,
+              max: 100,
+              ticks: { ...yScale.ticks, callback: (v) => `${v}%` },
+            },
           },
         },
       }),
@@ -269,16 +324,21 @@ export default class extends Controller {
         type: "line",
         data: {
           labels,
-          datasets: [{
-            label: "Reviewers active",
-            data: data.map((d) => d.unique_reviewers),
-            borderColor: "#86efac",
-            backgroundColor: "rgba(134,239,172,0.1)",
-            fill: true, tension: 0.3, pointRadius: 2,
-          }],
+          datasets: [
+            {
+              label: "Reviewers active",
+              data: data.map((d) => d.unique_reviewers),
+              borderColor: "#86efac",
+              backgroundColor: "rgba(134,239,172,0.1)",
+              fill: true,
+              tension: 0.3,
+              pointRadius: 2,
+            },
+          ],
         },
         options: {
-          responsive: true, maintainAspectRatio: false,
+          responsive: true,
+          maintainAspectRatio: false,
           plugins: { legend: { labels: legend.labels }, tooltip },
           scales: {
             x: xScale,
@@ -291,7 +351,7 @@ export default class extends Controller {
 
   renderReviewerPicker() {
     const reviewers = this.reviewerDataValue;
-    const wrapper   = this.reviewerPickerTarget;
+    const wrapper = this.reviewerPickerTarget;
 
     const dropdown = document.createElement("div");
     dropdown.className = "ship-monitor__reviewer-dropdown";
@@ -299,7 +359,8 @@ export default class extends Controller {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "ship-monitor__reviewer-dropdown-btn";
-    btn.innerHTML = '<span data-label>Add reviewer to compare…</span><span class="ship-monitor__reviewer-dropdown-arrow">▾</span>';
+    btn.innerHTML =
+      '<span data-label>Add reviewer to compare…</span><span class="ship-monitor__reviewer-dropdown-arrow">▾</span>';
 
     const panel = document.createElement("div");
     panel.className = "ship-monitor__reviewer-dropdown-panel";
@@ -316,7 +377,7 @@ export default class extends Controller {
 
     reviewers.forEach((r, i) => {
       const color = PALETTE[i % PALETTE.length];
-      const li    = document.createElement("li");
+      const li = document.createElement("li");
       const label = document.createElement("label");
       label.className = "ship-monitor__reviewer-option";
 
@@ -357,7 +418,10 @@ export default class extends Controller {
     search.addEventListener("input", () => {
       const q = search.value.toLowerCase();
       [...list.children].forEach((li) => {
-        li.hidden = !li.querySelector("label").textContent.toLowerCase().includes(q);
+        li.hidden = !li
+          .querySelector("label")
+          .textContent.toLowerCase()
+          .includes(q);
       });
     });
 
@@ -370,7 +434,9 @@ export default class extends Controller {
   updateDropdownLabel(btn) {
     const count = this.selectedReviewers.size;
     btn.querySelector("[data-label]").textContent =
-      count === 0 ? "Add reviewer to compare…" : `${count} reviewer${count !== 1 ? "s" : ""} selected`;
+      count === 0
+        ? "Add reviewer to compare…"
+        : `${count} reviewer${count !== 1 ? "s" : ""} selected`;
   }
 
   initReviewerCharts({ xScale, yScale, legend, tooltip }) {
@@ -384,10 +450,26 @@ export default class extends Controller {
     };
 
     this.reviewerCharts = [
-      new Chart(this.reviewerDecisionsTarget,  { type: "line", data: { labels, datasets: [] }, options: lineOpts }),
-      new Chart(this.reviewerReturnedTarget,   { type: "line", data: { labels, datasets: [] }, options: lineOpts }),
-      new Chart(this.reviewerApprovedTarget,   { type: "line", data: { labels, datasets: [] }, options: lineOpts }),
-      new Chart(this.reviewerRejectionsTarget, { type: "line", data: { labels, datasets: [] }, options: lineOpts }),
+      new Chart(this.reviewerDecisionsTarget, {
+        type: "line",
+        data: { labels, datasets: [] },
+        options: lineOpts,
+      }),
+      new Chart(this.reviewerReturnedTarget, {
+        type: "line",
+        data: { labels, datasets: [] },
+        options: lineOpts,
+      }),
+      new Chart(this.reviewerApprovedTarget, {
+        type: "line",
+        data: { labels, datasets: [] },
+        options: lineOpts,
+      }),
+      new Chart(this.reviewerRejectionsTarget, {
+        type: "line",
+        data: { labels, datasets: [] },
+        options: lineOpts,
+      }),
     ];
 
     this.charts.push(...this.reviewerCharts);
@@ -395,29 +477,32 @@ export default class extends Controller {
 
   updateReviewerCharts() {
     const reviewers = this.reviewerDataValue;
-    const selected  = reviewers.filter((r) => this.selectedReviewers.has(r.name));
+    const selected = reviewers.filter((r) =>
+      this.selectedReviewers.has(r.name),
+    );
 
     const lineDatasets = (field) =>
       selected.map((r) => {
-        const i     = reviewers.indexOf(r);
+        const i = reviewers.indexOf(r);
         const color = PALETTE[i % PALETTE.length];
         return {
-          label:            r.name,
-          data:             r.data.map((d) => d[field] > 0 ? d[field] : null),
-          borderColor:      color,
-          borderWidth:      1.5,
-          pointRadius:      0,
+          label: r.name,
+          data: r.data.map((d) => (d[field] > 0 ? d[field] : null)),
+          borderColor: color,
+          borderWidth: 1.5,
+          pointRadius: 0,
           pointHoverRadius: 4,
-          tension:          0.25,
-          spanGaps:         true,
-          fill:             false,
+          tension: 0.25,
+          spanGaps: true,
+          fill: false,
         };
       });
 
-    const [decisionsChart, returnedChart, approvedChart, rejectionsChart] = this.reviewerCharts;
-    decisionsChart.data.datasets  = lineDatasets("total");
-    returnedChart.data.datasets   = lineDatasets("returned");
-    approvedChart.data.datasets   = lineDatasets("approved");
+    const [decisionsChart, returnedChart, approvedChart, rejectionsChart] =
+      this.reviewerCharts;
+    decisionsChart.data.datasets = lineDatasets("total");
+    returnedChart.data.datasets = lineDatasets("returned");
+    approvedChart.data.datasets = lineDatasets("approved");
     rejectionsChart.data.datasets = lineDatasets("returned");
     decisionsChart.update();
     returnedChart.update();
@@ -433,12 +518,12 @@ export default class extends Controller {
     if (selected.length === 0) return;
 
     selected.forEach((r) => {
-      const i        = allReviewers.indexOf(r);
-      const color    = PALETTE[i % PALETTE.length];
+      const i = allReviewers.indexOf(r);
+      const color = PALETTE[i % PALETTE.length];
       const approved = r.data.reduce((s, d) => s + d.approved, 0);
       const returned = r.data.reduce((s, d) => s + d.returned, 0);
-      const total    = approved + returned;
-      const rate     = total > 0 ? ((returned / total) * 100).toFixed(1) : "—";
+      const total = approved + returned;
+      const rate = total > 0 ? ((returned / total) * 100).toFixed(1) : "—";
 
       const row = document.createElement("div");
       row.className = "ship-monitor__reviewer-total";
@@ -456,6 +541,7 @@ export default class extends Controller {
 
   disconnect() {
     this.charts.forEach((c) => c.destroy());
-    if (this.closeDropdownFn) document.removeEventListener("click", this.closeDropdownFn);
+    if (this.closeDropdownFn)
+      document.removeEventListener("click", this.closeDropdownFn);
   }
 }
