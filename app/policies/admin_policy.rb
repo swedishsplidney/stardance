@@ -38,7 +38,7 @@ class AdminPolicy < ApplicationPolicy
   def access_email_templates?
     user.admin?
   end
-  
+
   def manage_shop?
     user.admin? || user.shop_manager?
   end
