@@ -212,10 +212,10 @@ module Certification
       posts_to_check = [ review.post_ship_event, *devlog_posts ].compact
       ship_event_screenshot_url = posts_to_check.lazy.filter_map { |p| screenshot_url_for_post(p) }.first
 
-      screenshot_attachments = [
-        ship_event_screenshot_url.present? ? { "url" => ship_event_screenshot_url } : nil,
-        banner_url.present? ? { "url" => banner_url } : nil
-      ].compact
+      # Prefer an actual ship/devlog screenshot; fall back to the project banner
+      # only when there is no screenshot — never send both.
+      selected_screenshot_url = ship_event_screenshot_url.presence || banner_url
+      screenshot_attachments = selected_screenshot_url.present? ? [ { "url" => selected_screenshot_url } ] : []
       log_screenshot_result(review, screenshot_attachments, ship_event_screenshot_url, banner_url, posts_to_check, project)
 
       {
