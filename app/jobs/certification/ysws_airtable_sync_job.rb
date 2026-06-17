@@ -6,9 +6,7 @@ module Certification
 
     queue_as :default
 
-    # rescue_from(StandardError) must be declared FIRST — ActiveJob checks handlers in
-    # reverse registration order (last = highest priority), so retry_on declarations
-    # below will take precedence over this catch-all for Faraday errors.
+    # rescue_from(StandardError) must be declared FIRST — ActiveJob checks handlers in reverse registration order (last = highest priority), so retry_on declarations below will take precedence over this catch-all for Faraday errors.
     rescue_from(StandardError) do |error|
       Sentry.capture_exception(error, level: :fatal, message: "YswsAirtableSyncJob failed for ysws_review ##{arguments.first}: #{error.message}", extra: { ysws_review_id: arguments.first })
       raise error
