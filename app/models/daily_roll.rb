@@ -26,7 +26,8 @@
 class DailyRoll < ApplicationRecord
   # Postgres int4 max — an integer column stores this in the same 4 bytes as
   # a roll of 1, so we may as well use the whole dial.
-  MAX_VALUE = 2_147_483_647
+  # 64 bit unsigned max
+  MAX_VALUE = 18_446_744_073_709_551_615
   LEADERBOARD_SIZE = 5
 
   # The Monday rng goes live. Days are numbered from it (day 1, day 2, …);
@@ -46,8 +47,12 @@ class DailyRoll < ApplicationRecord
   # Throwaway aside about a roll, keyed to how big the number got. Each tier
   # has a few casual variants; one is picked per roll (see #flavor). Most rolls
   # land in the bottom tiers. Thresholds are checked high-to-low.
+  # new tiers
   FLAVORS = [
-    [ MAX_VALUE,     [ "no way, the max", "literally the maximum??", "ok that shouldn't happen 🫨" ] ],
+    [ MAX_VALUE,                  [ "no way, the max", "literally the maximum??", "ok that shouldn't happen 🫨" ] ],
+    [ 10_000_000_000_000_000_000, [ "QUINTILLIONS?!?!?!", "🤨 are you a wizard?", "breaking reality atp" ] ],
+    [ 1_000_000_000_000_000,      [ "quadrillions, wow", "that's possible?", "stupidly big" ] ],
+    [ 1_000_000_000_000,          [ "TrIlLiOnS!", "An absolute unit of a roll ", "Massive pull!" ] ],
     [ 1_000_000_000, [ "whoa, huge", "BILLIONS", "ok that's massive 🤯" ] ],
     [ 100_000_000,   [ "really big number", "huge", "ok big number 👀" ] ],
     [ 1_000_000,     [ "big number", "IS BIG NUMBER 🫨", "millions, nice" ] ],
@@ -61,11 +66,12 @@ class DailyRoll < ApplicationRecord
 
   # Colour tier for the number, by magnitude: the dim majority stays muted and
   # the rare big roll glows. Shared by the rail widget and the /rng hero.
+  # scaled the cosmic threshold
   TONES = [
-    [ 1_000_000, "cosmic" ],
-    [ 10_000,    "high" ],
-    [ 100,       "mid" ],
-    [ 0,         "low" ]
+    [ 1_000_000_000_000, "cosmic" ],
+    [ 1_000_000,         "high" ],
+    [ 1_000,               "mid" ],
+    [ 0,                 "low" ]
   ].freeze
 
   belongs_to :user
