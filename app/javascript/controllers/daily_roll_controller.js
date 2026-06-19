@@ -9,7 +9,8 @@ export default class extends Controller {
   static targets = ["number", "burst"];
   static values = {
     justRolled: Boolean,
-    value: Number,
+    // changed from Number to String so JavaScript doesn't freak out
+    value: String,
     // BEM block the reveal classes hang off, so the same animation can drive
     // the rail widget (daily-roll-widget) and the /rng hero (rng-hero).
     baseClass: { type: String, default: "daily-roll-widget" },
@@ -37,7 +38,7 @@ export default class extends Controller {
 
   disconnect() {
     this.alive = false;
-    clearTimeout(this.sleepTimer);
+    this.clearTimeout(this.sleepTimer);
   }
 
   get base() {
@@ -45,7 +46,9 @@ export default class extends Controller {
   }
 
   async reveal() {
-    const digits = String(Math.abs(this.valueValue));
+    // replaced Math.abs parsing with regular expression character stripping
+    // since string representations of BigInt can cause explosions
+    const digits = this.valueValue.replace(/[^0-9]/g, "");
     this.buildSlots();
 
     // Unveil from the ones place, one digit at a time. Each incoming digit
@@ -98,7 +101,7 @@ export default class extends Controller {
   // Final state: full styled number visible, flavor + leaderboard fade in.
   land() {
     if (!this.digitsElement) {
-      this.numberTarget.textContent = this.group(String(this.valueValue));
+      this.numberTarget.textContent = this.group(this.valueValue);
     }
     this.element.classList.remove(
       `${this.base}--waiting`,
@@ -112,9 +115,12 @@ export default class extends Controller {
     if (!this.hasBurstTarget) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const intMax = 2147483647;
+    // upgraded evaluation to work with BigInt expressions
+    const maxVal = 18446744073709551615n;
+    const currentRoll = BigInt(this.valueValue.replace(/[^0-9]/g, ""));
+    
     const count =
-      Math.abs(this.valueValue) >= intMax * 0.9
+      currentRoll >= (maxVal * 9n) / 10n
         ? this.constructor.PARTICLE_COUNT
         : Math.ceil(this.constructor.PARTICLE_COUNT / 2);
 
