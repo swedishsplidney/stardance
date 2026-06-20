@@ -118,7 +118,7 @@ export default class extends Controller {
     // upgraded evaluation to work with BigInt expressions
     const maxVal = 18446744073709551615n;
     const currentRoll = BigInt(this.valueValue.replace(/[^0-9]/g, ""));
-    
+
     const count =
       currentRoll >= (maxVal * 9n) / 10n
         ? this.constructor.PARTICLE_COUNT

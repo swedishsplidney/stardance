@@ -113,14 +113,14 @@ class DailyRollTest < ActiveSupport::TestCase
 
   test "flavor picks a variant from the matching magnitude tier" do
     # updated 4_200 to map to the 1_000 threshold
-    { 
-      0 => 0, 
-      7 => 1, 
-      42 => 10, 
-      4_200 => 1_000, 
+    {
+      0 => 0,
+      7 => 1,
+      42 => 10,
+      4_200 => 1_000,
       5_000_000_000_000 => 1_000_000_000_000,
       12_000_000_000_000_000_000 => 10_000_000_000_000_000_000,
-      DailyRoll::MAX_VALUE => DailyRoll::MAX_VALUE 
+      DailyRoll::MAX_VALUE => DailyRoll::MAX_VALUE
     }.each do |value, threshold|
       variants = DailyRoll::FLAVORS.find { |t, _| t == threshold }.last
       assert_includes variants, DailyRoll.new(value: value).flavor
@@ -142,8 +142,8 @@ class DailyRollTest < ActiveSupport::TestCase
   test "tone tiers the number by magnitude for colour" do
     # modify tones to map correctly
     assert_equal "low", DailyRoll.new(value: 9).tone
-    assert_equal "mid", DailyRoll.new(value: 5_000).tone       
-    assert_equal "high", DailyRoll.new(value: 5_000_000_000).tone    
+    assert_equal "mid", DailyRoll.new(value: 5_000).tone
+    assert_equal "high", DailyRoll.new(value: 5_000_000_000).tone
     assert_equal "cosmic", DailyRoll.new(value: 2_000_000_000_000).tone
   end
 
